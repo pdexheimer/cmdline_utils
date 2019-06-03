@@ -12,12 +12,12 @@ A collection of command-line utilities that have filled a need I had - I'll add 
 
 As a general rule, all utilities that operate on files will read from standard in if no file is specified.  All utilities write output to standard output.  Nearly all of these utilities will display a help message with the -?, -h, or --help parameters.
 
-**change\_delimiter** - Change the delimiters in a \<whatever\>-separated text file.  Respects both quoting and escaping of cell contents.
-**csv2tsv**, **tsv2csv** - These are bash aliases that are defined using change\_delimiter
-**header** - Extract column headers from a file and display them with their column numbers and (optionally) example values
-**hgrep** - Grep with headers.  Invokes the standard grep utility, but first displays the first line of the file.
-**number** - Prepends a line number to every line of input.  The only utility with no options or help message.
-**transpose** - Transposes a text file matrix.
+* **change\_delimiter** - Change the delimiters in a \<whatever\>-separated text file.  Respects both quoting and escaping of cell contents.
+* **csv2tsv**, **tsv2csv** - These are bash aliases that are defined using change\_delimiter
+* **header** - Extract column headers from a file and display them with their column numbers and (optionally) example values
+* **hgrep** - Grep with headers.  Invokes the standard grep utility, but first displays the first line of the file.
+* **number** - Prepends a line number to every line of input.  The only utility with no options or help message.
+* **transpose** - Transposes a text file matrix.
 
 ## Examples
 
