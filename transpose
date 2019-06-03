@@ -1,0 +1,93 @@
+#!/usr/bin/env perl
+
+#
+# transpose - transpose a columnar text file
+#
+# written by Phillip Dexheimer (pdexheimer@gmail.com), 2019
+
+use Getopt::Long;
+use Pod::Usage;
+# Standard module in perl - the parse_line function handles quoted delimiters
+use Text::ParseWords;
+
+my $delim = "\t";
+my $lines = 10;
+my $start = 1;
+my $help = '';
+
+GetOptions("delim=s" => \$delim,
+           "lines|n=i" => \$lines,
+	   "start=i" => \$start,
+	   "help|?" => \$help) or pod2usage(2);
+pod2usage(-verbose => 1, -exitval => 1) if ($help || $lines == 0);
+
+my @output = ();
+my $ncols = undef;
+my $processed = 0;
+while (<>) {
+  next if $. < $start;
+  chomp;
+  $processed += 1;
+  if ($lines >= 0 && $processed > $lines) {
+    last;
+  }
+  my @F = parse_line($delim, 0, $_);
+  unless (defined $ncols) {
+    $ncols = @F;
+    @output = map { [] } (1..$ncols);
+  }
+  if (@F > $ncols) {
+    print STDERR "Matrix is not square -- line $start contains $ncols columns, line $. contains ", scalar(@F), "\n";
+    exit;
+  }
+  for my $i (0..$ncols-1) {
+    my $out = ($i < @F) ? $F[$i] : "";
+    push @{$output[$i]}, $out;
+  }
+}
+
+foreach (@output) {
+  print join($delim, @{$_}), "\n";
+}
+
+__END__
+
+=head1 NAME
+
+transpose - transpose a matrix stored in a text file
+
+=head1 SYNOPSIS
+
+transpose [OPTIONS] [FILE]
+
+ Options:
+   -d, --delim DELIM      Specifies the column delimiter (default <TAB>)
+   -n, --lines COUNT      How many lines of input to process, -1 for all (default 10)
+   -s, --start LINENUM    What line to start with? (default 1)
+
+If FILE is not specified on the command line (or is -), standard input will be read
+
+=head1 OPTIONS
+
+=over 4
+
+=item B<--delim>
+
+The same delimiter will be used for both input and output.  The delimiter may be present within a column if it is backslash-escaped (ie, \,)
+
+=item B<--lines>
+
+Set to -1 to print the entire file.  Note that the entire output is loaded into memory, so be careful if the file is large
+
+=item B<--start>
+
+Start at this line - useful if the matrix includes comment or header lines
+
+=back
+
+=head1 DESCRIPTION
+
+Transpose a file!  Flip rows to columns and vice-versa
+
+=cut
+

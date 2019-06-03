@@ -1,0 +1,13 @@
+#!/usr/bin/env perl
+
+#
+# number - number the lines
+# written by Phillip Dexheimer (pdexheimer@gmail.com), 2019
+#
+
+# I can't run this as perl -p when using env, so fake it
+while (<>) {
+  printf("%05d | ", $.);
+} continue {
+  print or die "-p destination: $!\n";
+}

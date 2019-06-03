@@ -1,0 +1,46 @@
+#!/bin/bash
+
+#
+# hgrep - grep with headers
+#
+# written by Krishna Roskin, updated by Phillip Dexheimer (pdexheimer@gmail.com), 2019
+#
+
+if [ $# -eq 0 ] || [ "$1" = "-h" ] || [ "$1" = "-?" ]; then
+  >&2 cat <<EOHelp
+hgrep - grep with headers
+
+Displays the first line (the header line) of the file being grepped, 
+before searching for the pattern.  Arguments are the same as grep
+
+User Beware:
+ 1) Any shell aliases for grep are ignored
+ 2) If the input is stdin, the first line will be consumed.  This
+    will cause, eg, hgrep -n to be off by one
+ 3) If multiple input files are supplied, only the first line of
+    the first will be displayed
+EOHelp
+exit 1
+fi
+
+# Remove any arguments that begin with -
+ARGS=${@##-*}
+ARGS=($ARGS)
+
+# The input is always the second file (if present)
+# If there is no second file, it's stdin
+FILE=${ARGS[1]:--}
+
+exec 6<&0  # save stdin into filhandle 6
+if [ "$FILE" != "-" ]; then
+  exec < $FILE # redirect the file to stdin
+fi
+tmp=$IFS
+IFS=$'\n'
+read header
+echo $header
+IFS=$tmp
+exec 0<&6 6<&- # Restore stdin and delete filehandle 6
+
+exec grep "$@"
+

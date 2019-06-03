@@ -1,0 +1,72 @@
+#!/usr/bin/env perl
+
+#
+# change_delimiter - Change the column delimiters in a text file
+#
+# written by Phillip Dexheimer (pdexheimer@gmail.com), 2019
+#
+
+use Getopt::Long;
+use Pod::Usage;
+# Standard module in perl - the parse_line function handles quoted delimiters
+use Text::ParseWords;
+
+my $from = "\t";
+my $to = ",";
+my $quote = 0;
+my $help = '';
+
+GetOptions("from=s" => \$from,
+           "to=s" => \$to,
+	   "quote!" => \$quote,
+	   "help|?" => \$help) or pod2usage(2);
+pod2usage(-verbose => 1, -exitval => 1) if ($help);
+
+while (<>) {
+  chomp;
+  my @F = parse_line($from, 0, $_);
+  if ($quote) {
+    @F = map { qq("$_") } @F;
+  } else {
+    @F = map { s/$to/\\$to/o; $_ } @F;
+  }
+  print join($to, @F), "\n";
+}
+
+__END__
+
+=head1 NAME
+
+change_delimiter - convert column delimiters from one character to another
+
+=head1 SYNOPSIS
+
+change_delimiter [OPTIONS] [FILE]
+
+ Options:
+   -f, --from DELIM      The input column delimiter (default <TAB>)
+   -t, --to DELIM        The output column delimiter (default comma)
+   -q, --quote           Force each cell to be enclosed in double-quotes in the output
+
+If FILE is not specified on the command line (or is -), standard input will be read
+
+=head1 OPTIONS
+
+=over 4
+
+=item B<--from>, B<--to>
+
+The input and output delimiters, respectively.  Input delimiters will respect escaping (with a backslash) and quoting
+
+=item B<--quote>, B<--no-quote>
+
+Enables (disables) the quoting of all "cells" in the output.  If quoting is disabled, any occurrences of the B<--to> delimiter will be backslash escaped.  The default is for quoting to be disabled
+
+=back
+
+=head1 DESCRIPTION
+
+Convert the delimiters, ie to change from tsv to csv
+
+=cut
+
