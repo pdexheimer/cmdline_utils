@@ -6,7 +6,7 @@ A collection of command-line utilities that have filled a need I had - I'll add 
 
 1) Clone this repository (`git clone https://github.com/pdexheimer/cmdline_utils.git`)
 2) Source the included bash\_profile inside your own .bash\_profile file (`source <DIR>/bash_profile`)
-3) That's it!
+3) That's it! (Maybe?  You might need to `chmod a+x *` to make the files executable)
 
 ## Utilities
 
@@ -17,6 +17,7 @@ As a general rule, all utilities that operate on files will read from standard i
 * **header** - Extract column headers from a file and display them with their column numbers and (optionally) example values
 * **hgrep** - Grep with headers.  Invokes the standard grep utility, but first displays the first line of the file.
 * **number** - Prepends a line number to every line of input.  The only utility with no options or help message.
+* **ocut** - Ordered cut.  The cut utility always outputs selected files in order - ie, specifying `cut -f 3,2,1` will output the first three columns of the input, in the same order as the input.  The ocut utility mimics cut, but uses the order specified by the user.
 * **transpose** - Transposes a text file matrix.
 
 ## Examples

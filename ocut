@@ -1,0 +1,82 @@
+#!/usr/bin/env perl
+
+#
+# ocut - ordered cut, change the order of selected columns
+#
+# written by Phillip Dexheimer (pdexheimer@gmail.com), 2019
+
+use Getopt::Long;
+use Pod::Usage;
+# Standard module in perl - the parse_line function handles quoted delimiters
+use Text::ParseWords;
+
+my $delim = "\t";
+my @fields = ();
+my $field_str = "";
+my $only_delimited = 0;
+my $help = '';
+
+GetOptions("delim=s" => \$delim,
+           "fields=s" => \$field_str,
+           "only-delimited|s" => \$only_delimited,
+	       "help|?" => \$help) or pod2usage(2);
+pod2usage(-verbose => 1, -exitval => 1) if ($help);
+@fields = map { $_ - 1 } map {
+    if (/(\d+)-(\d+)/) {
+        $1 .. $2;
+    } else {
+        $_;
+    }
+} split /,/, $field_str;
+
+while (<>) {
+  chomp;
+  my @F = parse_line($delim, 0, $_);
+  if (@F == 1 && !$only_delimited) {
+      print "$F[0]\n";
+      continue;
+  }
+  my @output = ();
+  push (@output, $F[$_]) foreach (@fields);
+  print join($delim, @output), "\n";
+}
+
+__END__
+
+=head1 NAME
+
+ocut - select parts of a file, in a specified order
+
+=head1 SYNOPSIS
+
+ocut [OPTIONS] [FILE]
+
+ Options:
+   -d, --delim DELIM      Specifies the column delimiter (default <TAB>)
+   -f, --fields FIELDS    Which columns of the input should be selected?
+   -s, --only-delimited   If specified, lines without a delimeter are suppressed
+
+If FILE is not specified on the command line (or is -), standard input will be read.
+
+This is similar to cut, except that output fields will be in the specified order
+
+=head1 OPTIONS
+
+=over 4
+
+=item B<--delim>
+
+The delimiter may be present within a column if it is backslash-escaped (ie, \,)
+
+=item B<--fields>
+
+The (1-based) index of the columns to output.  As with cut, fields may be comma-separated and contiguous ranges may be specified.  The order of fields given to this parameter will be the order of fields in the output.
+
+=item B<--only-delimited>
+
+As in cut, by default lines that do not contain a delimiter are passed through to the output.  Specify this option to suppress them.
+
+=back
+
+=cut
+
