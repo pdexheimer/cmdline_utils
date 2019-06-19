@@ -1,0 +1,15 @@
+# This script will add the utils directory to the path and create some useful aliases
+# Phillip Dexheimer (pdexheimer@gmail.com), 2019
+
+
+if [ -n "${BASH_SOURCE+set}" ]; then
+  # From https://stackoverflow.com/a/246128 - what directory is this file in?
+  UTILS_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" > /dev/null 2>&1 && pwd)"
+else
+  UTILS_DIR="$( cd "$( dirname "$0" )" > /dev/null 2>&1 && pwd)"
+fi
+
+export PATH="$PATH:$UTILS_DIR"
+
+alias tsv2csv="change_delimiter --from $'\t' --to ,"
+alias csv2tsv="change_delimiter --from , --to $'\t'"

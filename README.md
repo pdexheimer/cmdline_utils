@@ -5,7 +5,7 @@ A collection of command-line utilities that have filled a need I had - I'll add 
 ## Installation
 
 1) Clone this repository (`git clone https://github.com/pdexheimer/cmdline_utils.git`)
-2) Source the included bash\_profile inside your own .bash\_profile file (`source <DIR>/bash_profile`)
+2) Source the included activate inside your shell startup script  - .bash\_profile or .zshrc, for example (`source <DIR>/activate`)
 3) That's it! (Maybe?  You might need to `chmod a+x *` to make the files executable)
 
 ## Utilities
